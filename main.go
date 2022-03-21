@@ -9,9 +9,10 @@ import (
 
 func main() {
 	s := chat.NewServer()
+	go s.Run()
 	listener, err := net.Listen("tcp", ":8888")
 	if err != nil {
-		log.Fatal("unable to start server: %s", err.Error())
+		log.Fatal("unable to start server: " + err.Error())
 	}
 
 	defer listener.Close()
@@ -24,6 +25,7 @@ func main() {
 			continue
 		}
 
-		go s.newClient()
+		c := s.NewClient(conn)
+		go c.ReadInput()
 	}
 }
